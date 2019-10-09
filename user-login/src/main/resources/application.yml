@@ -1,0 +1,27 @@
+spring:
+
+  datasource:
+    url: jdbc:mysql:// 192.168.1.126:3306/user?serverTimezone=GMT%2B8
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      max-request-size: 1024MB
+      max-file-size: 1024MB
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+
+
+
+
+mybatis:
+  # 指定全局配置文件位置
+  config-location: classpath:mybatis/mybatis-config.xml
+  # 指定sql映射文件位置
+  mapperLocations: classpath:mybatis/mapper/*.xml
+  typeAliasesPackage: com.example.userlogin.domain.User
+server:
+  port: 8083
