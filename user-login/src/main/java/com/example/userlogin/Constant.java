@@ -20,10 +20,10 @@ public class Constant {
         private static final Constant instance = new Constant();
     }
     private Constant() {
-
-        dataMap.put("影视娱乐","movie");
+        dataMap.put("影视音影","movie");
         dataMap.put("健康医疗","health");
         dataMap.put("新闻/广告","news");
+        dataMap.put("其他","other");
     }
 
     public static Constant getInstance() {

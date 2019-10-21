@@ -1,6 +1,6 @@
 package com.example.userlogin.dao;
 
-import com.example.userlogin.domain.User;
+import com.example.userlogin.domain.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -10,14 +10,36 @@ import java.util.List;
 @Repository
 public interface UserMapper {
 
-    public User findUserById(int id);
+    User findUserById(int id);
 
     //通过用户名查询用户
-    public List<User> findUserByName(String username);
+    List<User> findUserByName(String username);
 
     //增加新用户
-    public boolean addUser(User user);
+    boolean addUser(User user);
 
-    public User  findUserAndPassord(User user);
+    //找到用户
+    User findUserAndPassord(User user);
+
+    //插入上传文件信息
+    boolean addUserUpInfo(UserUpInfoBean userUpInfoBean);
+
+    //获取用户上传记录
+    List<UserUpInfoBean> findUserUpInfo(int id);
+
+    //修改密码
+
+    boolean updatePassword(User user);
+
+    //查询电影前10的数据
+    public List<MovieBean> findTop10Movie(int id);
+
+    //获取各省的用户
+    public List<ProvinceBean> findProvinceData(int id);
+
+    //获取前10最受欢迎的视屏类型
+    public List<MovieTypeBean> findMovieType(int id);
+
+
 }
 

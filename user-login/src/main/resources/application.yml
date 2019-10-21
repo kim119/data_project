@@ -13,6 +13,8 @@ spring:
     view:
       prefix: /WEB-INF/jsp/
       suffix: .jsp
+  jackson:
+    default-property-inclusion: always
 
 
 
@@ -22,6 +24,7 @@ mybatis:
   config-location: classpath:mybatis/mybatis-config.xml
   # 指定sql映射文件位置
   mapperLocations: classpath:mybatis/mapper/*.xml
-  typeAliasesPackage: com.example.userlogin.domain.User
+  typeAliasesPackage: com.example.userlogin.domain.*
+
 server:
-  port: 8083
+  port: 8082

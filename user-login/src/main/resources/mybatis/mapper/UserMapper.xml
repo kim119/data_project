@@ -3,11 +3,37 @@
 <mapper namespace="com.example.userlogin.dao.UserMapper">
 
     <resultMap id="users" type="com.example.userlogin.domain.User">
-        <result column="id" property="id" jdbcType="VARCHAR" />
-        <result column="username" property="username" jdbcType="VARCHAR" />
-        <result column="password" property="password" jdbcType="VARCHAR" />
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
     </resultMap>
 
+    <resultMap id="user_uploads" type="com.example.userlogin.domain.UserUpInfoBean">
+        <result column="user_id" property="user_id"/>
+        <result column="file_name" property="file_name"/>
+        <result column="data_type" property="data_type"/>
+        <result column="file_format" property="file_format"/>
+        <result column="file_size" property="file_size"/>
+        <result column="create_time" property="create_time"/>
+    </resultMap>
+
+    <!--每个省份的用户-->
+    <resultMap id="provinceBeans" type="com.example.userlogin.domain.ProvinceBean">
+        <result column="province" property="province"/>
+        <result column="num" property="num"/>
+    </resultMap>
+    <!--电影的排名-->
+    <resultMap id="movieBeans" type="com.example.userlogin.domain.MovieBean">
+        <result column="name" property="name"/>
+        <result column="cid" property="cid"/>
+        <result column="num" property="num"/>
+    </resultMap>
+
+    <!--电影的类型统计-->
+    <resultMap id="movieTypes" type="com.example.userlogin.domain.MovieTypeBean">
+        <result column="name" property="name"/>
+        <result column="num" property="num"/>
+    </resultMap>
 
     <!-- 查询-->
     <select id="findUserById" resultType="com.example.userlogin.domain.User">
@@ -20,12 +46,40 @@
 
     <!-- 增加用户/注册用户-->
     <insert id="addUser" parameterType="com.example.userlogin.domain.User">
-        insert into  Users (username,password) values (#{username},#{password})
+        insert into Users (username,password) values (#{username},#{password})
     </insert>
 
     <!--通过账号和密码查询用户信息-->
     <select id="findUserAndPassord" resultType="com.example.userlogin.domain.User">
-              SELECT  * from Users WHERE  username=#{username} AND password=#{password};
+        SELECT * from Users WHERE username=#{username} AND password=#{password};
     </select>
+
+
+    <!--插入用户上传信息-->
+    <insert id="addUserUpInfo" parameterType="com.example.userlogin.domain.User">
+        INSERT INTO user_upload(user_id,file_name,data_type,file_format,file_size) VALUES
+        (#{user_id},#{file_name},#{data_type},#{file_format},#{file_size})
+    </insert>
+
+    <!--获取上传记录-->
+    <select id="findUserUpInfo" resultMap="user_uploads">
+        SELECT * from user_upload where user_id=#{user_id};
+    </select>
+
+    <!--查询前10 影片-->
+    <select id="findTop10Movie" resultMap="movieBeans">
+        SELECT * from TopNMovie
+    </select>
+
+    <!--查询每个省多少用户-->
+    <select id="findProvinceData" resultMap="provinceBeans">
+        SELECT * from TopNProvince
+    </select>
+
+    <select id="findMovieType" resultMap="movieTypes">
+        SELECT num,name from MovieTypeCount as mt LEFT JOIN movie_info as mi on mt.cid=mi.cid ORDER BY num DESC
+    </select>
+
+
 </mapper>
 

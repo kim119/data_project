@@ -7,10 +7,15 @@
     <settings>
         <setting name="mapUnderscoreToCamelCase" value="true"/>
         <setting name="logImpl" value="STDOUT_LOGGING"/>
+        <setting name="callSettersOnNulls" value="true"/>
     </settings>
 
     <typeAliases>
         <typeAlias type="com.example.userlogin.domain.User" alias="users"/>
+        <typeAlias type="com.example.userlogin.domain.UserUpInfoBean" alias="user_uploads"/>
+        <typeAlias type="com.example.userlogin.domain.ProvinceBean" alias="provinceBeans"/>
+        <typeAlias type="com.example.userlogin.domain.MovieBean" alias="movieBeans"/>
+        <typeAlias type="com.example.userlogin.domain.MovieTypeBean" alias="movieTypes"/>
     </typeAliases>
 
 
