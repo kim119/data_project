@@ -36,7 +36,7 @@
     </resultMap>
 
     <!-- 查询-->
-    <select id="findUserById" resultType="com.example.userlogin.domain.User">
+    <select id="findUserById" parameterType="int" resultType="com.example.userlogin.domain.User">
         select * from Users where id = #{id};
     </select>
 
@@ -66,19 +66,54 @@
         SELECT * from user_upload where user_id=#{user_id};
     </select>
 
+    <!--                                                              -->
     <!--查询前10 影片-->
     <select id="findTop10Movie" resultMap="movieBeans">
         SELECT * from TopNMovie
     </select>
 
-    <!--查询每个省多少用户-->
-    <select id="findProvinceData" resultMap="provinceBeans">
-        SELECT * from TopNProvince
+    <!--查询 一个月 前10 影片-->
+    <select id="findOneTop10Movie" resultMap="movieBeans">
+        SELECT * from TopNMovie_one
     </select>
 
+    <!--查询半年 前10 影片-->
+    <select id="findHalfTop10Movie" resultMap="movieBeans">
+        SELECT * from TopNMovie_half
+    </select>
+<!--                                                         -->
+    <!--查询每个省多少用户-->
+    <select id="findProvinceData" resultMap="provinceBeans">
+        SELECT province,num from TopNProvince  order by num DESC
+    </select>
+
+    <!--查询一个月 每个省多少用户-->
+    <select id="findOneProvinceData" resultMap="provinceBeans">
+        SELECT province,num from TopNProvince_one  order by num DESC
+    </select>
+
+    <!--查询半年 每个省多少用户-->
+    <select id="findHalfProvinceData" resultMap="provinceBeans">
+        SELECT province,num from TopNProvince_half  order by num DESC
+    </select>
+
+<!--                                                            -->
     <select id="findMovieType" resultMap="movieTypes">
         SELECT num,name from MovieTypeCount as mt LEFT JOIN movie_info as mi on mt.cid=mi.cid ORDER BY num DESC
     </select>
+
+    <select id="findOneMovieType" resultMap="movieTypes">
+        SELECT num,name from MovieTypeCount_one as mt LEFT JOIN movie_info as mi on mt.cid=mi.cid ORDER BY num DESC
+    </select>
+
+    <select id="findHalfMovieType" resultMap="movieTypes">
+        SELECT num,name from MovieTypeCount_half as mt LEFT JOIN movie_info as mi on mt.cid=mi.cid ORDER BY num DESC
+    </select>
+
+    <insert id="saveAnalyzeMovieRecode" parameterType="java.util.List">
+
+
+    </insert>
 
 
 </mapper>

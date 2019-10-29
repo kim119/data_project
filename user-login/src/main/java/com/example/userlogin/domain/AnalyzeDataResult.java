@@ -5,6 +5,10 @@ import java.util.List;
 
 public class AnalyzeDataResult {
 
+
+
+
+    private Integer id;
     private List<MovieBean> movies;
     private List<MovieTypeBean> movieTypes;
     private List<ProvinceBean> provinces;
@@ -33,6 +37,13 @@ public class AnalyzeDataResult {
         this.provinces = provinces;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
 
 

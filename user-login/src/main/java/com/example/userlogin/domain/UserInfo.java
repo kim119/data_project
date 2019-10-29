@@ -16,6 +16,7 @@ public class UserInfo implements Serializable {
         this.user_id = user_id;
     }
 
+
     public String getUsername() {
         return username;
     }
@@ -26,6 +27,27 @@ public class UserInfo implements Serializable {
 
     public int  user_id;
     private String username;
+    private String dataType;
+    //0.代表1个月  ,1代表 半年 ,2代表一年
+    private int dataCondition;
+
+    public String getDataType() {
+        return dataType;
+    }
+
+    public void setDataType(String dataType) {
+        this.dataType = dataType;
+    }
+
+    public int getDataCondition() {
+        return dataCondition;
+    }
+
+    public void setDataCondition(int dataCondition) {
+        this.dataCondition = dataCondition;
+    }
+
+
 
     @Override
     public String toString() {

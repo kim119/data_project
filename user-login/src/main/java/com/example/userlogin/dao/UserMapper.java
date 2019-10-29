@@ -28,17 +28,32 @@ public interface UserMapper {
     List<UserUpInfoBean> findUserUpInfo(int id);
 
     //修改密码
-
     boolean updatePassword(User user);
 
-    //查询电影前10的数据
+    //查询所有电影前10的数据
     public List<MovieBean> findTop10Movie(int id);
+
+    //查询一个月数据 的电影前10的数据
+    public List<MovieBean> findOneTop10Movie(int id);
+    //查询半年数据  的电影前10的数据
+    public List<MovieBean> findHalfTop10Movie(int id);
 
     //获取各省的用户
     public List<ProvinceBean> findProvinceData(int id);
 
+    public List<ProvinceBean> findOneProvinceData(int id);
+
+    public List<ProvinceBean> findHalfProvinceData(int id);
+
+
+
+
     //获取前10最受欢迎的视屏类型
     public List<MovieTypeBean> findMovieType(int id);
+
+    public List<MovieTypeBean> findOneMovieType(int id);
+
+    public List<MovieTypeBean> findHalfMovieType(int id);
 
 
 }

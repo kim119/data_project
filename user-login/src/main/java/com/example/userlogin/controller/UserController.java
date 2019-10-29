@@ -9,7 +9,6 @@ import org.apache.hadoop.conf.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.util.List;
 
@@ -141,25 +140,49 @@ public class UserController {
 
 
     /**
-     * 返回图表
+     * 数据结果获取
      *
      * @return JsonResult<String>
      */
     @RequestMapping(value = "/analyze", produces = "application/json;charset=UTF-8")
     public JsonResult<String> analyzeDataRecode(@RequestBody UserInfo user) {
 
+        List<MovieBean> top10Movie = null;
+        List<MovieTypeBean> movieType = null;
+        List<ProvinceBean> provinceData = null;
+
         User userById = userMapper.findUserById(user.getUser_id());
         if (userById == null) {
             return new JsonResult(Constant.ERRORCODE, "用户id不存在");
         }
-        List<MovieBean> top10Movie = userMapper.findTop10Movie(user.getUser_id());
-        List<MovieTypeBean> movieType = userMapper.findMovieType(user.getUser_id());
-        List<ProvinceBean> provinceData = userMapper.findProvinceData(user.getUser_id());
+        switch (user.getDataCondition()) {
+            case 0:
+                top10Movie = userMapper.findOneTop10Movie(user.getUser_id());
+                movieType = userMapper.findOneMovieType(user.getUser_id());
+                provinceData = userMapper.findOneProvinceData(user.getUser_id());
+                break;
+            case 1:
+                top10Movie = userMapper.findHalfTop10Movie(user.getUser_id());
+                movieType = userMapper.findHalfMovieType(user.getUser_id());
+                provinceData = userMapper.findHalfProvinceData(user.getUser_id());
+                break;
+            case 2:
+                top10Movie = userMapper.findTop10Movie(user.getUser_id());
+                movieType = userMapper.findMovieType(user.getUser_id());
+                provinceData = userMapper.findProvinceData(user.getUser_id());
+                break;
+            default:
+
+                break;
+        }
+
+        //保存历史记录
         AnalyzeDataResult analyzeDataResult = new AnalyzeDataResult();
+        analyzeDataResult.setId(user.getUser_id());
         analyzeDataResult.setMovies(top10Movie);
         analyzeDataResult.setMovieTypes(movieType);
         analyzeDataResult.setProvinces(provinceData);
-        //保存历史记录
+
         return new JsonResult(analyzeDataResult);
 
     }
