@@ -11,11 +11,11 @@
     </settings>
 
     <typeAliases>
-        <typeAlias type="com.example.userlogin.domain.User" alias="users"/>
-        <typeAlias type="com.example.userlogin.domain.UserUpInfoBean" alias="user_uploads"/>
-        <typeAlias type="com.example.userlogin.domain.ProvinceBean" alias="provinceBeans"/>
-        <typeAlias type="com.example.userlogin.domain.MovieBean" alias="movieBeans"/>
-        <typeAlias type="com.example.userlogin.domain.MovieTypeBean" alias="movieTypes"/>
+        <typeAlias type="com.dlb.userlogin.domain.User" alias="users"/>
+        <typeAlias type="com.dlb.userlogin.domain.UserUpInfoBean" alias="user_uploads"/>
+        <typeAlias type="com.dlb.userlogin.domain.ProvinceBean" alias="provinceBeans"/>
+        <typeAlias type="com.dlb.userlogin.domain.MovieBean" alias="movieBeans"/>
+        <typeAlias type="com.dlb.userlogin.domain.MovieTypeBean" alias="movieTypes"/>
     </typeAliases>
 
 

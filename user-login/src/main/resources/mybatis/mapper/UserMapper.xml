@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.example.userlogin.dao.UserMapper">
+<mapper namespace="com.dlb.userlogin.dao.UserMapper">
 
-    <resultMap id="users" type="com.example.userlogin.domain.User">
+    <resultMap id="users" type="com.dlb.userlogin.domain.User">
         <result column="id" property="id" jdbcType="VARCHAR"/>
         <result column="username" property="username" jdbcType="VARCHAR"/>
         <result column="password" property="password" jdbcType="VARCHAR"/>
     </resultMap>
 
-    <resultMap id="user_uploads" type="com.example.userlogin.domain.UserUpInfoBean">
+    <resultMap id="user_uploads" type="com.dlb.userlogin.domain.UserUpInfoBean">
         <result column="user_id" property="user_id"/>
         <result column="file_name" property="file_name"/>
         <result column="data_type" property="data_type"/>
@@ -18,25 +18,25 @@
     </resultMap>
 
     <!--每个省份的用户-->
-    <resultMap id="provinceBeans" type="com.example.userlogin.domain.ProvinceBean">
+    <resultMap id="provinceBeans" type="com.dlb.userlogin.domain.ProvinceBean">
         <result column="province" property="province"/>
         <result column="num" property="num"/>
     </resultMap>
     <!--电影的排名-->
-    <resultMap id="movieBeans" type="com.example.userlogin.domain.MovieBean">
+    <resultMap id="movieBeans" type="com.dlb.userlogin.domain.MovieBean">
         <result column="name" property="name"/>
         <result column="cid" property="cid"/>
         <result column="num" property="num"/>
     </resultMap>
 
     <!--电影的类型统计-->
-    <resultMap id="movieTypes" type="com.example.userlogin.domain.MovieTypeBean">
+    <resultMap id="movieTypes" type="com.dlb.userlogin.domain.MovieTypeBean">
         <result column="name" property="name"/>
         <result column="num" property="num"/>
     </resultMap>
 
     <!-- 查询-->
-    <select id="findUserById" parameterType="int" resultType="com.example.userlogin.domain.User">
+    <select id="findUserById" parameterType="int" resultType="com.dlb.userlogin.domain.User">
         select * from Users where id = #{id};
     </select>
 
@@ -45,18 +45,18 @@
     </select>
 
     <!-- 增加用户/注册用户-->
-    <insert id="addUser" parameterType="com.example.userlogin.domain.User">
+    <insert id="addUser" parameterType="com.dlb.userlogin.domain.User">
         insert into Users (username,password) values (#{username},#{password})
     </insert>
 
     <!--通过账号和密码查询用户信息-->
-    <select id="findUserAndPassord" resultType="com.example.userlogin.domain.User">
+    <select id="findUserAndPassord" resultType="com.dlb.userlogin.domain.User">
         SELECT * from Users WHERE username=#{username} AND password=#{password};
     </select>
 
 
     <!--插入用户上传信息-->
-    <insert id="addUserUpInfo" parameterType="com.example.userlogin.domain.User">
+    <insert id="addUserUpInfo" parameterType="com.dlb.userlogin.domain.User">
         INSERT INTO user_upload(user_id,file_name,data_type,file_format,file_size) VALUES
         (#{user_id},#{file_name},#{data_type},#{file_format},#{file_size})
     </insert>
@@ -81,23 +81,23 @@
     <select id="findHalfTop10Movie" resultMap="movieBeans">
         SELECT * from TopNMovie_half
     </select>
-<!--                                                         -->
+    <!--                                                    -->
     <!--查询每个省多少用户-->
     <select id="findProvinceData" resultMap="provinceBeans">
-        SELECT province,num from TopNProvince  order by num DESC
+        SELECT province,num from TopNProvince order by num DESC
     </select>
 
     <!--查询一个月 每个省多少用户-->
     <select id="findOneProvinceData" resultMap="provinceBeans">
-        SELECT province,num from TopNProvince_one  order by num DESC
+        SELECT province,num from TopNProvince_one order by num DESC
     </select>
 
     <!--查询半年 每个省多少用户-->
     <select id="findHalfProvinceData" resultMap="provinceBeans">
-        SELECT province,num from TopNProvince_half  order by num DESC
+        SELECT province,num from TopNProvince_half order by num DESC
     </select>
 
-<!--                                                            -->
+    <!--                                                            -->
     <select id="findMovieType" resultMap="movieTypes">
         SELECT num,name from MovieTypeCount as mt LEFT JOIN movie_info as mi on mt.cid=mi.cid ORDER BY num DESC
     </select>
@@ -111,8 +111,47 @@
     </select>
 
     <insert id="saveAnalyzeMovieRecode" parameterType="java.util.List">
+        insert into movie_TopNRecord(user_id,name,cid,num) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.user_id},
+            #{item.name},
+            #{item.cid},
+            #{item.num}
+            )
+        </foreach>
+    </insert>
 
+    <insert id="saveAnalyzeMovieTypeRecode" parameterType="java.util.List">
+        insert into movie_TypeRecord(
+        user_id,
+        name,
+        num
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.user_id},
+            #{item.name},
+            #{item.num}
+            )
+        </foreach>
+    </insert>
 
+    <insert id="saveAnalyzeProvinceRecode" parameterType="java.util.List">
+        insert into province_record(
+        user_id,
+        name,
+        num
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.user_id},
+            #{item.name},
+            #{item.num}
+            )
+        </foreach>
     </insert>
 
 

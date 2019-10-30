@@ -8,7 +8,7 @@
         <version>2.1.8.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.example</groupId>
+    <groupId>com.dlb</groupId>
     <artifactId>user-login</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>user-login</name>
@@ -103,7 +103,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.example.UserLoginApplication</mainClass>
+                    <mainClass>com.dlb.UserLoginApplication</mainClass>
                 </configuration>
             </plugin>
         </plugins>
