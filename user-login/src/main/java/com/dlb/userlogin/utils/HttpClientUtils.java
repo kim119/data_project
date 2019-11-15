@@ -1,18 +1,16 @@
 package com.dlb.userlogin.utils;
 
 import com.alibaba.fastjson.JSONObject;
-import com.dlb.userlogin.utils.SSLClient;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
-
 import java.util.Iterator;
 import java.util.Map;
 
-public class HttpClientUtil {
+public class HttpClientUtils {
 
     public String doPost(String url, Map<String, String> paramsMap, String charset) {
         HttpClient httpClient = null;
@@ -31,6 +29,7 @@ public class HttpClientUtil {
                     Map.Entry<String, String> elem = (Map.Entry<String, String>) iterator.next();
                     jsonParam.put(elem.getKey(), elem.getValue());
                 }
+                System.out.println("jsonParam.toString"+jsonParam.toString());
                 StringEntity entity = new StringEntity(jsonParam.toString(), "utf-8");// 解决中文乱码问题
                 entity.setContentEncoding("UTF-8");
                 entity.setContentType("application/json");

@@ -2,20 +2,22 @@ package com.dlb.userlogin.domain;
 
 import java.io.Serializable;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * 返回用户信息bean
  */
 public class UserInfo implements Serializable {
 
 
-    public int getUser_id() {
+    public Integer getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(int user_id) {
+    public void setUser_id(Integer user_id) {
         this.user_id = user_id;
     }
-
 
     public String getUsername() {
         return username;
@@ -24,12 +26,6 @@ public class UserInfo implements Serializable {
     public void setUsername(String username) {
         this.username = username;
     }
-
-    public int  user_id;
-    private String username;
-    private String dataType;
-    //0.代表1个月  ,1代表 半年 ,2代表一年
-    private int dataCondition;
 
     public String getDataType() {
         return dataType;
@@ -47,6 +43,47 @@ public class UserInfo implements Serializable {
         this.dataCondition = dataCondition;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public long getBalance() {
+        return balance;
+    }
+
+    public void setBalance(long balance) {
+        this.balance = balance;
+    }
+
+    //用户id
+    public Integer user_id;
+    //用户名字
+    private String username;
+    //数据类型
+    @JSONField(serialize = false)
+    private String dataType;
+    //0.代表1个月  ,1代表 半年 ,2代表一年
+    @JSONField(serialize = false)
+    private int dataCondition;
+
+    private String token;
+
+    @JSONField(serialize = false)
+    private long balance; //余额
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    private String address;
 
 
     @Override

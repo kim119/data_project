@@ -7,10 +7,10 @@ public class WalletArgument {
      * 发送者地址    sender      "de5453f16541ffa8655a2b83b03cd91928888888"
      * 接收者地址    recipient   "b1dab07ed424171e0d8dfb9fcea5d17deb7d2315"
      */
-    public static String amount;
-    public static String privateKey;
-    public static String sender;
-    public static String recipient;
+    public static String amount="amount";
+    public static String privateKey="privateKey";
+    public static String sender="sender";
+    public static String recipient="recipient";
 
     /**
      * sender       "de5453f16541ffa8655a2b83b03cd91928888888"
@@ -18,8 +18,17 @@ public class WalletArgument {
      * 数据类型      dataType     "1"
      * 数据量        dataAmount  "10000000"
      */
-    public static String dataType;
-    public static String dataAmount;
+    public static String dataType="dataType";
+    public static String dataAmount="dataAmount";
+    public static String address="address";
+    public static String publicKey="publicKey";
+    /**
+     * 返回的参数
+     */
+    public static  String success="success";
+    public static  String transactionHash="transactionHash";
+    public static String reward="reward";
+    public static String balance="balance";
 
 
 }

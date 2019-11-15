@@ -48,6 +48,7 @@ public class AESUtil {
         cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(decryptKey.getBytes(), "AES"));
         // 采用base64算法进行转码,避免出现中文乱码
         byte[] encryptBytes = Base64.decodeBase64(encryptStr);
+
         byte[] decryptBytes = cipher.doFinal(encryptBytes);
         return new String(decryptBytes);
     }

@@ -16,6 +16,10 @@
         <typeAlias type="com.dlb.userlogin.domain.ProvinceBean" alias="provinceBeans"/>
         <typeAlias type="com.dlb.userlogin.domain.MovieBean" alias="movieBeans"/>
         <typeAlias type="com.dlb.userlogin.domain.MovieTypeBean" alias="movieTypes"/>
+        <typeAlias type="com.dlb.userlogin.domain.record.Top10MovieRecord" alias="movieRecodes"/>
+        <typeAlias type="com.dlb.userlogin.domain.record.MovieTypeRecord" alias="movieTypeRecodes"/>
+        <typeAlias type="com.dlb.userlogin.domain.record.ProvinceDataRecord" alias="provinceRecodes"/>
+        <typeAlias type="com.dlb.userlogin.domain.RechargeBean" alias="rechargeModes"/>
     </typeAliases>
 
 

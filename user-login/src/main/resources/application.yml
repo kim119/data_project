@@ -1,20 +1,46 @@
 spring:
 
+  devtools:
+    restart:
+      trigger-file: trigger.txt
+
+
   datasource:
-    url: jdbc:mysql:// 192.168.1.126:3306/user?serverTimezone=GMT%2B8
+    url: jdbc:mysql:// 192.168.10.126:3306/user?serverTimezone=GMT%2B8
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
   servlet:
     multipart:
-      max-request-size: 1024MB
-      max-file-size: 1024MB
+      max-request-size: 10240MB
+      max-file-size: 10240MB
   mvc:
     view:
       prefix: /WEB-INF/jsp/
       suffix: .jsp
   jackson:
     default-property-inclusion: always
+
+
+  redis:
+    #数据库索引
+    database: 0
+    host: 192.168.10.126
+    port: 6379
+    password:
+    jedis:
+      pool:
+        #最大连接数
+        max-active: 2000
+        #最大阻塞等待时间(负数表示没限制)
+        max-wait: 1000
+        #最大空闲
+        max-idle: 200
+        #最小空闲
+        min-idle: 200
+        #连接超时时间
+        timeout: 3000
+
 
 
 
@@ -26,5 +52,9 @@ mybatis:
   mapperLocations: classpath:mybatis/mapper/*.xml
   typeAliasesPackage: com.example.userlogin.domain.*
 
+
+
 server:
   port: 8082
+
+

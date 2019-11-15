@@ -1,11 +1,15 @@
 package com.dlb.userlogin.utils;
 
+import com.dlb.userlogin.Constant;
+import com.dlb.userlogin.domain.User;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 上传操作
@@ -13,20 +17,20 @@ import java.net.URI;
 public class UpdateHDFSUtils {
 
     /**
-     * 上传到HDFS
+     *
      * @param dataType
-     * @param username
+     * @param user
      * @param config
      * @param url
      * @param file
      */
-    public static void copyfileToHdfs(String dataType,String username,Configuration config, String url, File file) {
+    public static void copyfileToHdfs(String dataType, User user, Configuration config, String url, File file) {
         try {
             System.out.println("config"+config);
             FileSystem fs = FileSystem.get(new URI(url), config,"hdfs");
             Path src = new Path(file.getPath());
             // 要上传到hdfs的目标路径
-            Path dst = new Path(url + "/"+dataType+"/"+username);
+            Path dst = new Path(url + "/"+dataType+"/"+user.getUsername());
             if (!fs.exists(dst)) {
                 // 创建目录
                 fs.mkdirs(dst);
@@ -35,6 +39,9 @@ public class UpdateHDFSUtils {
             fs.copyFromLocalFile(src, dst);
             deleteFile(src.toString());
             fs.close();
+
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }

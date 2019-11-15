@@ -2,10 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.dlb.userlogin.dao.UserMapper">
 
+
     <resultMap id="users" type="com.dlb.userlogin.domain.User">
-        <result column="id" property="id" jdbcType="VARCHAR"/>
-        <result column="username" property="username" jdbcType="VARCHAR"/>
-        <result column="password" property="password" jdbcType="VARCHAR"/>
+        <result column="user_id" property="user_id"/>
+        <result column="username" property="username" />
+        <result column="password" property="password" />
+        <result column="address" property="address" />
+        <result column="privateKey" property="privateKey" />
+        <result column="publicKey" property="publicKey" />
+        <result column="create_time" property="create_time" />
     </resultMap>
 
     <resultMap id="user_uploads" type="com.dlb.userlogin.domain.UserUpInfoBean">
@@ -16,6 +21,30 @@
         <result column="file_size" property="file_size"/>
         <result column="create_time" property="create_time"/>
     </resultMap>
+
+    <!--电影记录信息-->
+    <resultMap id="movieRecodes" type="com.dlb.userlogin.domain.record.Top10MovieRecord">
+        <result column="user_id" property="user_id"/>
+        <result column="name" property="name"/>
+        <result column="cid" property="cid"/>
+        <result column="num" property="num"/>
+    </resultMap>
+
+    <!--影视类型记录信息-->
+    <resultMap id="movieTypeRecodes" type="com.dlb.userlogin.domain.record.MovieTypeRecord">
+        <result column="user_id" property="user_id"/>
+        <result column="name" property="name"/>
+        <result column="num" property="num"/>
+        <result column="data_type" property="data_type"/>
+    </resultMap>
+
+    <!--省份记录信息-->
+    <resultMap id="provinceRecodes" type="com.dlb.userlogin.domain.record.ProvinceDataRecord">
+        <result column="user_id" property="user_id"/>
+        <result column="province" property="province"/>
+        <result column="num" property="num"/>
+    </resultMap>
+
 
     <!--每个省份的用户-->
     <resultMap id="provinceBeans" type="com.dlb.userlogin.domain.ProvinceBean">
@@ -35,9 +64,20 @@
         <result column="num" property="num"/>
     </resultMap>
 
+    <!--充值bean-->
+    <resultMap id="rechargeModes" type="com.dlb.userlogin.domain.RechargeBean">
+        <result column="amount" property="amount"/>
+        <result column="sender" property="sender"/>
+        <result column="recipient" property="recipient"/>
+        <result column="privateKey" property="privateKey"/>
+        <result column="user_id" property="user_id"/>
+        <result column="create_time" property="create_time"/>
+        <result column="type" property="type"/>
+    </resultMap>
+
     <!-- 查询-->
     <select id="findUserById" parameterType="int" resultType="com.dlb.userlogin.domain.User">
-        select * from Users where id = #{id};
+        select * from Users where user_id = #{user_id};
     </select>
 
     <select id="findUserByName" resultType="users">
@@ -46,11 +86,12 @@
 
     <!-- 增加用户/注册用户-->
     <insert id="addUser" parameterType="com.dlb.userlogin.domain.User">
-        insert into Users (username,password) values (#{username},#{password})
+        insert into Users (username,password,address,privateKey,publicKey) values
+        (#{username},#{password},#{address},#{privateKey},#{publicKey})
     </insert>
 
     <!--通过账号和密码查询用户信息-->
-    <select id="findUserAndPassord" resultType="com.dlb.userlogin.domain.User">
+    <select id="findUserAndPassord" resultMap="users">
         SELECT * from Users WHERE username=#{username} AND password=#{password};
     </select>
 
@@ -110,7 +151,7 @@
         SELECT num,name from MovieTypeCount_half as mt LEFT JOIN movie_info as mi on mt.cid=mi.cid ORDER BY num DESC
     </select>
 
-    <insert id="saveAnalyzeMovieRecode" parameterType="java.util.List">
+    <insert id="saveAnalyzeMovieRecode" parameterType="movieRecodes">
         insert into movie_TopNRecord(user_id,name,cid,num) values
         <foreach collection="list" item="item" index="index" separator=",">
             (
@@ -122,37 +163,50 @@
         </foreach>
     </insert>
 
-    <insert id="saveAnalyzeMovieTypeRecode" parameterType="java.util.List">
+    <insert id="saveAnalyzeMovieTypeRecode" parameterType="movieTypeRecodes">
         insert into movie_TypeRecord(
         user_id,
         name,
-        num
+        num,
+        data_type
         )
         values
         <foreach collection="list" item="item" index="index" separator=",">
             (
             #{item.user_id},
             #{item.name},
+            #{item.num},
+            #{item.data_type}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="saveAnalyzeProvinceRecode" parameterType="provinceRecodes">
+        insert into province_record(
+        user_id,
+        province,
+        num
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.user_id},
+            #{item.province},
             #{item.num}
             )
         </foreach>
     </insert>
 
-    <insert id="saveAnalyzeProvinceRecode" parameterType="java.util.List">
-        insert into province_record(
-        user_id,
-        name,
-        num
-        )
-        values
-        <foreach collection="list" item="item" index="index" separator=",">
-            (
-            #{item.user_id},
-            #{item.name},
-            #{item.num}
-            )
-        </foreach>
+    <!--保存转账记录-->
+
+    <insert id="saveRechargeRecord" parameterType="rechargeModes">
+        insert into recharge_record(user_id,amount,sender,recipient,privateKey,type)
+        values(#{user_id},#{amount},#{sender},#{recipient},#{privateKey},#{type})
     </insert>
+
+    <select id="queryTransferRecord" resultMap="rechargeModes">
+        select * from recharge_record where user_id=#{user_id} order by create_time desc
+    </select>
 
 
 </mapper>

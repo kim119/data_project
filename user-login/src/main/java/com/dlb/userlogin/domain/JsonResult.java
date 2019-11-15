@@ -40,7 +40,7 @@ public class JsonResult<T> {
      */
     public JsonResult() {
         this.code = "0";
-        this.msg = "操作成功！";
+        this.msg = "请求成功";
     }
 
     /**
@@ -62,7 +62,7 @@ public class JsonResult<T> {
     public JsonResult(T data) {
         this.data = data;
         this.code = "0";
-        this.msg = "操作成功！";
+        this.msg = "请求成功";
     }
 
     /**

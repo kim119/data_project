@@ -5,15 +5,17 @@ package com.dlb.userlogin.utils;
  */
 public class URLAdresss {
 
-    public static final String BASE_URL = "https://192.168.10.111:13091/api";
+    public static final String BASE_URL = "https://192.168.10.171:13091";
     //创建钱包
-    public static final String URL_CREATWALLET = "/wallet";
+    public static final String URL_CREATWALLET = "/api/wallet";
     //转账
-    public static final String URL_TRANSFERACCOUNTS = "/transaction/launch/transafer";
+    public static final String URL_TRANSFERACCOUNTS = "/api/transaction/launch/transafer";
     //上传数据
-    public static final String URL_UPDATEDATE = "/upload/launch/transafer";
+    public static final String URL_UPLOADDATA = "/api/upload/launch/transafer";
     //使用数据
-    public static final String URL_USEDATE = "/useData/launch/transafer";
+    public static final String URL_USEDATE = "/api/useData/launch/transafer";
+    //查询余额
+    public static final String URL_BALANCE = "/api/balance";
 
 
 }

@@ -29,7 +29,16 @@ public class MovieTypeRecord implements Serializable {
         this.user_id = user_id;
     }
 
+    public int getData_type() {
+        return data_type;
+    }
+
+    public void setData_type(int data_type) {
+        this.data_type = data_type;
+    }
+
     private String name;
     private long num;
     private int user_id;
+    private int data_type;
 }

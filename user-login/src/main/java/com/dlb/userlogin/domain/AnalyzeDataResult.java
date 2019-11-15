@@ -5,9 +5,6 @@ import java.util.List;
 
 public class AnalyzeDataResult implements Serializable {
 
-
-
-
     private Integer id;
     private List<MovieBean> movies;
     private List<MovieTypeBean> movieTypes;
