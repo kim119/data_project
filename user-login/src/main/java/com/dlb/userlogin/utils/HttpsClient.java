@@ -87,7 +87,7 @@ public class HttpsClient {
 
             case URLAdresss.URL_USEDATE:
                 resultParams.put(WalletArgument.success, jsonObject.getBoolean(WalletArgument.success));
-                resultParams.put(WalletArgument.transactionHash, jsonObject.getString(WalletArgument.success));
+                resultParams.put(WalletArgument.transactionHash, jsonObject.getString(WalletArgument.transactionHash));
                 resultParams.put(WalletArgument.reward, jsonObject.getString(WalletArgument.reward));
                 break;
 

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -70,13 +69,52 @@ public class UserController {
      * 获取用户上传记录
      */
     @RequestMapping(value = "/upinfo", produces = "application/json;charset=UTF-8")
-    public JsonResult<String> getUpInfo(@RequestBody UserInfo user) {
+    public JsonResult<String> getUpInfo(@RequestBody PageInfo pageInfo) {
+
+        //第几页  ，每一第几条  总条数
+
+        //2   5   10  //(5-10)  总条数/每页的条数 =页数    当前页*每的条数 10    //
 
         if (!getToken()) {
             return new JsonResult(Constant.ERROT_TOKENINVALID, "token无效");
         }
-        List<UserUpInfoBean> userUpInfos = userMapper.findUserUpInfo(user.getUser_id());
-        return new JsonResult(userUpInfos);
+
+        //当前条数
+        //pageInfo.getCurrentPage()
+        int count = userMapper.findUserUpInfoCount(pageInfo.getUser_id());
+        int currentIndex = 0;
+
+        if (pageInfo.getCurrentPage() == 0) {
+            pageInfo.setCurrentPage(1);
+        }
+        currentIndex = pageInfo.getPageSize() * (pageInfo.getCurrentPage() - 1);
+
+        pageInfo.setCurrentIndex(currentIndex);
+
+        List<UserUpInfoBean> userUpInfos = userMapper.findUserUpInfo(pageInfo);
+        return new JsonResult(userUpInfos, count);
+
+    }
+
+    /**
+     * 设置密码接口
+     */
+    @RequestMapping(value = "/setPayPW", produces = "application/json;charset=UTF-8")
+    public JsonResult setPW(@RequestBody User user) {
+
+        System.out.println(user.getUser_id());
+        System.out.println(user.getPay_password());
+        if (null == user.getUser_id() || null == user.getPay_password()) {
+
+            return new JsonResult(Constant.ERRORCODE, "参数不完整");
+        }
+
+        boolean b = userMapper.setPlayPW(user);
+        if (b) {
+            return new JsonResult();
+        } else {
+            return new JsonResult(Constant.ERRORCODE, "设置密码成功");
+        }
 
     }
 
@@ -101,7 +139,21 @@ public class UserController {
             return new JsonResult(Constant.ERROR_USERNOTEXIST, "用户不存在");
         }
         synchronized (UserController.class) {
-            boolean b = useDataToQKL(userById);
+            int money = 0;
+            int dataCondition = user.getDataCondition();//0.代表1个月  ,1代表 半年 ,2代表一年
+            switch (dataCondition) {
+                case 0:
+                    money = 1;
+                    break;
+                case 1:
+                    money = 10;
+                    break;
+                case 2:
+                    money = 100;
+                    break;
+            }
+
+            boolean b = useDataToQKL(userById, money);
             if (!b) {
                 return new JsonResult(Constant.ERRORCODE, "dlb余额不足");
             }
@@ -152,6 +204,7 @@ public class UserController {
 
     /**
      * 充值记录
+     *
      * @param userInfo
      * @return
      */
@@ -232,12 +285,14 @@ public class UserController {
     /**
      * 使用数据
      */
-    public boolean useDataToQKL(User user) {
+    public boolean useDataToQKL(User user, int money) {
+        System.out.println(money);
+        System.out.println(user.getAddress());
         Map<String, String> params = new HashMap();
         params.put(WalletArgument.sender, user.getAddress());
         params.put(WalletArgument.privateKey, user.getPrivateKey());
         params.put(WalletArgument.dataType, "1");
-        params.put(WalletArgument.dataAmount, 100 + "");
+        params.put(WalletArgument.dataAmount, money + "");
         try {
             HttpsClient.getInstance().sendRequet(URLAdresss.URL_USEDATE, params);
         } catch (Exception e) {

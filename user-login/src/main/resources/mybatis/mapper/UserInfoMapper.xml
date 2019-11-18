@@ -10,6 +10,8 @@
         <result column="privateKey" property="privateKey" />
         <result column="publicKey" property="publicKey" />
         <result column="create_time" property="create_time" />
+        <result column="isSet" property="isSet" />
+        <result column="pay_password" property="pay_password" />
     </resultMap>
 
     <select id="queryUser" resultType="com.dlb.userlogin.domain.dlb.DlB_User">
@@ -27,6 +29,7 @@
     <insert id="deleteUser" parameterType="users">
         DELETE FROM Users WHERE user_id = #{user_id}
     </insert>
+
 
 
 </mapper>

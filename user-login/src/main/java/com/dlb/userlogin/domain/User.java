@@ -7,14 +7,6 @@ import java.io.Serializable;
 public class User implements Serializable {
 
 
-    public int getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -56,9 +48,15 @@ public class User implements Serializable {
     }
 
 
-    private int user_id;
-    @JSONField(serialize = false)
-    private String password;
+    public Integer getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(Integer user_id) {
+        this.user_id = user_id;
+    }
+
+
     @JSONField(serialize = false)
     public String getNewPassword() {
         return newPassword;
@@ -68,13 +66,15 @@ public class User implements Serializable {
         this.newPassword = newPassword;
     }
 
-    private String newPassword;
-    private String username;
-    private String address;
-    @JSONField(serialize = false)
-    private String privateKey;
-    private String publicKey;
-    private long balance;
+
+    public int getIsSet() {
+        return isSet;
+    }
+
+    public void setIsSet(int isSet) {
+        this.isSet = isSet;
+    }
+
 
     public String getCreate_time() {
         return create_time;
@@ -84,7 +84,6 @@ public class User implements Serializable {
         this.create_time = create_time;
     }
 
-    private String create_time;
 
     public long getBalance() {
         return balance;
@@ -93,6 +92,29 @@ public class User implements Serializable {
     public void setBalance(long balance) {
         this.balance = balance;
     }
+    private Integer user_id;
+    @JSONField(serialize = false)
+    private String password;
+    private String newPassword;
+    private String username;
+    private String address;
+    @JSONField(serialize = false)
+    private String privateKey;
+    private String publicKey;
+    private long balance;
+    private int isSet;
+
+    public String getPay_password() {
+        return pay_password;
+    }
+
+    public void setPay_password(String pay_password) {
+        this.pay_password = pay_password;
+    }
+
+    private String pay_password;
+    private String create_time;
+
 
     @Override
     public String toString() {

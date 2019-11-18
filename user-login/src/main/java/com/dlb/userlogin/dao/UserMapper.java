@@ -14,7 +14,7 @@ import java.util.Map;
 @Repository
 public interface UserMapper {
 
-    User findUserById(long id);
+    User findUserById(Integer id);
 
     //通过用户名查询用户
     List<User> findUserByName(String username);
@@ -29,7 +29,7 @@ public interface UserMapper {
     boolean addUserUpInfo(UserUpInfoBean userUpInfoBean);
 
     //获取用户上传记录
-    List<UserUpInfoBean> findUserUpInfo(long id);
+    List<UserUpInfoBean> findUserUpInfo(PageInfo pageInfo);
 
     //修改密码
     boolean updatePassword(User user);
@@ -66,6 +66,13 @@ public interface UserMapper {
 
     //查询交易记录
     public List<RechargeBean> queryTransferRecord(long user_id);
+
+    public User queryUserAndPassword(User user);
+
+    public boolean setPlayPW(User user);
+
+    /*获取总条数*/
+    public int findUserUpInfoCount(long user_id);
 
 
 

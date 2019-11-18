@@ -35,6 +35,17 @@ public class JsonResult<T> {
     private String code;
     private String msg;
 
+
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
+    private int total;
+
     /**
      * 若没有数据返回，默认状态码为 0，提示信息为“操作成功！”
      */
@@ -65,6 +76,19 @@ public class JsonResult<T> {
         this.msg = "请求成功";
     }
 
+    /**
+     * 有数据返回时，状态码为 0，默认提示信息为“操作成功！”
+     *
+     * @param data
+     */
+    public JsonResult(T data,int total) {
+        this.data = data;
+        this.code = "0";
+        this.msg = "请求成功";
+        this.total=total;
+
+
+    }
     /**
      * 有数据返回，状态码为 0，人为指定提示信息
      *

@@ -1,4 +1,5 @@
 package com.dlb.userlogin.domain;
+
 import java.io.Serializable;
 
 /**
@@ -12,6 +13,7 @@ public class UserUpInfoBean implements Serializable {
     private String file_format;
     private long file_size;
     private String create_time;
+
 
 
     public Integer getUser_id() {

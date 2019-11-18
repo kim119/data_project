@@ -5,12 +5,14 @@
 
     <resultMap id="users" type="com.dlb.userlogin.domain.User">
         <result column="user_id" property="user_id"/>
-        <result column="username" property="username" />
-        <result column="password" property="password" />
-        <result column="address" property="address" />
-        <result column="privateKey" property="privateKey" />
-        <result column="publicKey" property="publicKey" />
-        <result column="create_time" property="create_time" />
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="address" property="address"/>
+        <result column="privateKey" property="privateKey"/>
+        <result column="publicKey" property="publicKey"/>
+        <result column="create_time" property="create_time"/>
+        <result column="isSet" property="isSet"/>
+        <result column="pay_password" property="pay_password"/>
     </resultMap>
 
     <resultMap id="user_uploads" type="com.dlb.userlogin.domain.UserUpInfoBean">
@@ -95,6 +97,12 @@
         SELECT * from Users WHERE username=#{username} AND password=#{password};
     </select>
 
+    <!--通过账号和密码查询用户信息-->
+    <select id="queryUserAndPassword" parameterType="com.dlb.userlogin.domain.User"
+            resultType="com.dlb.userlogin.domain.User">
+        SELECT * from Users WHERE username=#{username} AND password=#{password};
+    </select>
+
 
     <!--插入用户上传信息-->
     <insert id="addUserUpInfo" parameterType="com.dlb.userlogin.domain.User">
@@ -103,11 +111,20 @@
     </insert>
 
     <!--获取上传记录-->
-    <select id="findUserUpInfo" resultMap="user_uploads">
-        SELECT * from user_upload where user_id=#{user_id};
+    <select id="findUserUpInfo" parameterType="com.dlb.userlogin.domain.PageInfo" resultMap="user_uploads">
+
+        SELECT * from user_upload where user_id=#{user_id} order by create_time desc
+
+        <if test="pageSize != 0">
+            limit #{currentIndex}, #{pageSize}
+        </if>
     </select>
 
-    <!--                                                              -->
+    <select id="findUserUpInfoCount" resultType="java.lang.Integer">
+        select count(*) from user_upload where user_id=#{user_id}
+    </select>
+
+
     <!--查询前10 影片-->
     <select id="findTop10Movie" resultMap="movieBeans">
         SELECT * from TopNMovie
@@ -207,6 +224,10 @@
     <select id="queryTransferRecord" resultMap="rechargeModes">
         select * from recharge_record where user_id=#{user_id} order by create_time desc
     </select>
+
+    <insert id="setPlayPW" parameterType="com.dlb.userlogin.domain.User">
+        update Users set pay_password=#{pay_password},isSet=1 where user_id=#{user_id}
+    </insert>
 
 
 </mapper>

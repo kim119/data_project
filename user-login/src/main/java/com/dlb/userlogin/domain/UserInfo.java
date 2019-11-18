@@ -74,6 +74,28 @@ public class UserInfo implements Serializable {
 
     @JSONField(serialize = false)
     private long balance; //余额
+    private int isSet;
+    private String address;
+    private int currentPage;
+    private int pageSize;
+
+
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
+    }
+
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
+
 
     public String getAddress() {
         return address;
@@ -83,7 +105,21 @@ public class UserInfo implements Serializable {
         this.address = address;
     }
 
-    private String address;
+
+
+    public int getIsSet() {
+        return isSet;
+    }
+
+    public void setIsSet(int isSet) {
+        this.isSet = isSet;
+    }
+
+
+
+
+
+
 
 
     @Override

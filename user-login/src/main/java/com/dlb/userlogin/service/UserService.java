@@ -87,23 +87,15 @@ public class UserService {
             decPassword = AESUtil.decrypt(user.getPassword(), AESUtil.KEY);
             user.setPassword(decPassword);
             List<User> user_server = userMapper.findUserAndPassord(user);
-            System.out.println(user_server.toString());
+
             if (null != user_server&&user_server.size()==1) {
-
                 String token = tokenManager.createToken(user_server.get(0).getUser_id());
-                //获取用户余额
-                try {
-
-                } catch (Exception e) {
-
-                    return new JsonResult(Constant.ERROR_FAILEGETBALANCE, "获取余额失败");
-                }
-
                 //封装数据
                 UserInfo userInfo = new UserInfo();
                 userInfo.setUsername(user_server.get(0).getUsername());
                 userInfo.setUser_id(user_server.get(0).getUser_id());
                 userInfo.setToken(token);
+                userInfo.setIsSet(user_server.get(0).getIsSet());
                 userInfo.setAddress(user_server.get(0).getAddress());
                 return new JsonResult(userInfo);
             } else {
