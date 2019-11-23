@@ -8,6 +8,8 @@ import java.util.Map;
  */
 public class Constant {
 
+    //成功按钮
+    public static final String SUCCESS = "10000";
     //登陆失败
     public static final String ERRORCODE = "10001";
     public static final String ERROT_TOKENINVALID = "10002"; //token 无效
@@ -45,6 +47,8 @@ public class Constant {
     public final static int CHARGETYPE = 1; //充值
     public final static int WITHDRAWTYPE = 2; //充值
     public final static int USERRECHARGE = 3; //充值
+    public final static String SET_PAYPASSWORD = "SET_PAYPASSWORD"; //设置支付密码
+    public final static String MODIFY_PAYPASSWORD = "MODIFY_PAYPASSWORD"; //修改支付密码
 
     public static Constant getInstance() {
         return SingletonClassInstance.instance;

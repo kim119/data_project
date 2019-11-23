@@ -79,6 +79,16 @@ public class UserInfo implements Serializable {
     private int currentPage;
     private int pageSize;
 
+    public String getPay_password() {
+        return pay_password;
+    }
+
+    public void setPay_password(String pay_password) {
+        this.pay_password = pay_password;
+    }
+
+    private String pay_password;
+
 
     public int getCurrentPage() {
         return currentPage;

@@ -4,9 +4,11 @@ import com.dlb.userlogin.Constant;
 import com.dlb.userlogin.dao.UserInfoMapper;
 import com.dlb.userlogin.dao.UserMapper;
 import com.dlb.userlogin.domain.JsonResult;
+import com.dlb.userlogin.domain.PageInfo;
 import com.dlb.userlogin.domain.User;
 import com.dlb.userlogin.domain.dlb.DlB_User;
 import com.dlb.userlogin.service.TokenManager;
+import com.dlb.userlogin.utils.AESUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,7 +53,7 @@ public class UserCenterController {
 
     /*获取所有的用户信息*/
     @RequestMapping(value = "/getUsers")
-    public JsonResult getAllUsers() {
+    public JsonResult getAllUsers(@RequestBody PageInfo pageInfo) {
         if (!getToken()) {
             return new JsonResult(Constant.ERROT_TOKENINVALID, "token无效");
         }
@@ -62,17 +64,30 @@ public class UserCenterController {
     /*修改密码*/
     @RequestMapping(value = "modifyPassword", produces = "application/json;charset=UTF-8")
     public JsonResult modifyPassword(@RequestBody com.dlb.userlogin.domain.User user) {
+        String decryptPW = null;
+        String decryptNewPW = null;
         if (!getToken()) {
             return new JsonResult(Constant.ERROT_TOKENINVALID, "token无效");
         }
-        if (user.getPassword().length() < 6) {
+
+        try {
+            decryptPW = AESUtil.decrypt(user.getPassword(), AESUtil.KEY);
+            decryptNewPW = AESUtil.decrypt(user.getNewPassword(), AESUtil.KEY);
+            System.out.println("aaa"+decryptNewPW);
+            System.out.println("bb"+decryptPW);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (decryptNewPW.length() < 6) {
 
             return new JsonResult(Constant.ERRORCODE, "密码不能小于6位");
         }
+        user.setPassword(decryptPW);
         List<User> userAndPassord = userMapper.findUserAndPassord(user);
-        if (userAndPassord.size()<=0) {
+        if (userAndPassord.size() <= 0) {
             return new JsonResult(Constant.ERRORCODE, "密码不正确");
         }
+        user.setNewPassword(decryptNewPW);
         boolean b = userInfoMapper.modifyPassword(user);
 
         if (!b) {

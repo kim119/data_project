@@ -29,6 +29,7 @@ public class WalletArgument {
     public static  String transactionHash="transactionHash";
     public static String reward="reward";
     public static String balance="balance";
+    public static String pay="pay";
 
 
 }

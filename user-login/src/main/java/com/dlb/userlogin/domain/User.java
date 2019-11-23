@@ -48,16 +48,7 @@ public class User implements Serializable {
     }
 
 
-    public Integer getUser_id() {
-        return user_id;
-    }
 
-    public void setUser_id(Integer user_id) {
-        this.user_id = user_id;
-    }
-
-
-    @JSONField(serialize = false)
     public String getNewPassword() {
         return newPassword;
     }
@@ -65,7 +56,6 @@ public class User implements Serializable {
     public void setNewPassword(String newPassword) {
         this.newPassword = newPassword;
     }
-
 
     public int getIsSet() {
         return isSet;
@@ -92,10 +82,27 @@ public class User implements Serializable {
     public void setBalance(long balance) {
         this.balance = balance;
     }
+
+    public String getPay_password() {
+        return pay_password;
+    }
+    public void setPay_password(String pay_password) {
+        this.pay_password = pay_password;
+    }
+
+    public Integer getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(Integer user_id) {
+        this.user_id = user_id;
+    }
+
     private Integer user_id;
     @JSONField(serialize = false)
     private String password;
-    private String newPassword;
+  /*  @JSONField(serialize = false)
+    private String newPassword;*/
     private String username;
     private String address;
     @JSONField(serialize = false)
@@ -103,17 +110,9 @@ public class User implements Serializable {
     private String publicKey;
     private long balance;
     private int isSet;
-
-    public String getPay_password() {
-        return pay_password;
-    }
-
-    public void setPay_password(String pay_password) {
-        this.pay_password = pay_password;
-    }
-
     private String pay_password;
     private String create_time;
+    private String newPassword;
 
 
     @Override
@@ -126,6 +125,8 @@ public class User implements Serializable {
                 ", privateKey='" + privateKey + '\'' +
                 ", publicKey='" + publicKey + '\'' +
                 ", balance=" + balance +
+                ", isSet=" + isSet +
+                ", pay_password='" + pay_password + '\'' +
                 ", create_time='" + create_time + '\'' +
                 '}';
     }

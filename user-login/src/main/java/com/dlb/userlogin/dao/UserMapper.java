@@ -16,6 +16,8 @@ public interface UserMapper {
 
     User findUserById(Integer id);
 
+    List<User> findUsersById(Integer id);
+
     //通过用户名查询用户
     List<User> findUserByName(String username);
 
@@ -39,6 +41,7 @@ public interface UserMapper {
 
     //查询一个月数据 的电影前10的数据
     public List<MovieBean> findOneTop10Movie(long id);
+
     //查询半年数据  的电影前10的数据
     public List<MovieBean> findHalfTop10Movie(long id);
 
@@ -50,8 +53,6 @@ public interface UserMapper {
     public List<ProvinceBean> findHalfProvinceData(long id);
 
 
-
-
     //获取前10最受欢迎的视屏类型
     public List<MovieTypeBean> findMovieType(long id);
 
@@ -60,23 +61,27 @@ public interface UserMapper {
     public List<MovieTypeBean> findHalfMovieType(long id);
 
     public void saveAnalyzeMovieRecode(List<Top10MovieRecord> top10MovieRecords);
+
     public void saveAnalyzeMovieTypeRecode(List<MovieTypeRecord> movieTypeRecord);
+
     public void saveAnalyzeProvinceRecode(List<ProvinceDataRecord> provinceDataRecord);
+
     public void saveRechargeRecord(RechargeBean rechargeBean);
 
     //查询交易记录
-    public List<RechargeBean> queryTransferRecord(long user_id);
+    public List<RechargeBean> queryTransferRecord(PageInfo pageInfo);
 
     public User queryUserAndPassword(User user);
 
-    public boolean setPlayPW(User user);
+    public boolean setPayPW(ChangePWBean user);
+
+    public boolean modifyPayPW(ChangePWBean user);
 
     /*获取总条数*/
     public int findUserUpInfoCount(long user_id);
 
-
-
-
+    /*获取充值记录总条数*/
+    public int queryTopUpRecord(long user_id);
 
 
 }

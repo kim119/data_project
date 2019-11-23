@@ -20,6 +20,9 @@
 
     <select id="queryAllUsers" resultMap="users">
         select * from Users order by create_time desc
+        <if test="pageSize != 0">
+            limit #{currentIndex}, #{pageSize}
+        </if>
     </select>
 
     <insert id="modifyPassword" parameterType="users">
@@ -33,4 +36,5 @@
 
 
 </mapper>
+
 

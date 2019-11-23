@@ -78,7 +78,12 @@
     </resultMap>
 
     <!-- 查询-->
-    <select id="findUserById" parameterType="int" resultType="com.dlb.userlogin.domain.User">
+    <select id="findUserById" resultType="com.dlb.userlogin.domain.User">
+        select * from Users where user_id = #{user_id};
+    </select>
+
+    <!-- 查询-->
+    <select id="findUsersById" resultMap="users">
         select * from Users where user_id = #{user_id};
     </select>
 
@@ -112,9 +117,7 @@
 
     <!--获取上传记录-->
     <select id="findUserUpInfo" parameterType="com.dlb.userlogin.domain.PageInfo" resultMap="user_uploads">
-
         SELECT * from user_upload where user_id=#{user_id} order by create_time desc
-
         <if test="pageSize != 0">
             limit #{currentIndex}, #{pageSize}
         </if>
@@ -221,12 +224,24 @@
         values(#{user_id},#{amount},#{sender},#{recipient},#{privateKey},#{type})
     </insert>
 
+
     <select id="queryTransferRecord" resultMap="rechargeModes">
         select * from recharge_record where user_id=#{user_id} order by create_time desc
+        <if test="pageSize != 0">
+            limit #{currentIndex}, #{pageSize}
+        </if>
     </select>
 
-    <insert id="setPlayPW" parameterType="com.dlb.userlogin.domain.User">
+    <select id="queryTopUpRecord" resultType="java.lang.Integer">
+        select count(*) from recharge_record where user_id=#{user_id}
+    </select>
+
+    <insert id="setPayPW" parameterType="com.dlb.userlogin.domain.ChangePWBean">
         update Users set pay_password=#{pay_password},isSet=1 where user_id=#{user_id}
+    </insert>
+
+    <insert id="modifyPayPW" parameterType="com.dlb.userlogin.domain.ChangePWBean">
+        update Users set pay_password=#{pay_password} where user_id=#{user_id}
     </insert>
 
 

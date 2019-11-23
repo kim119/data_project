@@ -141,7 +141,7 @@ public class UserService {
 
             long fileSize = file.getSize() / 1024 / 1024 == 0 ? 1 : file.getSize() / 1024 / 1024;
             UpdateHDFSUtils.copyfileToHdfs(dataType, user, new Configuration(), "hdfs://192.168.10.123:8020", hh);
-            boolean isUp = upToQKL(user, fileSize + "");
+            boolean isUp = upToQKL(user, fileSize );
             if (!isUp) {
                 System.out.println("上传失败");
             }
@@ -321,12 +321,13 @@ public class UserService {
     /**
      * 获取上传数据给区块链
      */
-    public boolean upToQKL(User user, String fileSize) {
+    public boolean upToQKL(User user, long fileSize) {
         Map<String, String> params = new HashMap();
         params.put(WalletArgument.sender, user.getAddress());
         params.put(WalletArgument.privateKey, user.getPrivateKey());
         params.put(WalletArgument.dataType, "1");
-        params.put(WalletArgument.dataAmount, fileSize + "");
+        params.put(WalletArgument.dataAmount, fileSize+"" );
+        params.put(WalletArgument.reward, fileSize+"");
         PayResultBean payResultBean = HttpsClient.getInstance().sendRequet(URLAdresss.URL_UPLOADDATA, params);
         if (null == payResultBean) {
             return false;
@@ -338,5 +339,8 @@ public class UserService {
         }
 
     }
+
+
+
 
 }

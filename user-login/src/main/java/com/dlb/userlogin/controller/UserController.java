@@ -59,9 +59,7 @@ public class UserController {
      */
     @PostMapping("/upload")
     public JsonResult<String> updateZip(@RequestParam("file") MultipartFile file, String username, String dataType, int userId, String token) {
-
         return userService.updateZip(file, username, dataType, userId, token);
-
     }
 
 
@@ -69,14 +67,14 @@ public class UserController {
      * 获取用户上传记录
      */
     @RequestMapping(value = "/upinfo", produces = "application/json;charset=UTF-8")
-    public JsonResult<String> getUpInfo(@RequestBody PageInfo pageInfo) {
+    public PageResult<String> getUpInfo(@RequestBody PageInfo pageInfo) {
 
         //第几页  ，每一第几条  总条数
 
         //2   5   10  //(5-10)  总条数/每页的条数 =页数    当前页*每的条数 10    //
 
         if (!getToken()) {
-            return new JsonResult(Constant.ERROT_TOKENINVALID, "token无效");
+            return new PageResult(Constant.ERROT_TOKENINVALID, "token无效");
         }
 
         //当前条数
@@ -92,7 +90,7 @@ public class UserController {
         pageInfo.setCurrentIndex(currentIndex);
 
         List<UserUpInfoBean> userUpInfos = userMapper.findUserUpInfo(pageInfo);
-        return new JsonResult(userUpInfos, count);
+        return new PageResult(userUpInfos, count);
 
     }
 
@@ -100,22 +98,88 @@ public class UserController {
      * 设置密码接口
      */
     @RequestMapping(value = "/setPayPW", produces = "application/json;charset=UTF-8")
-    public JsonResult setPW(@RequestBody User user) {
-
-        System.out.println(user.getUser_id());
-        System.out.println(user.getPay_password());
-        if (null == user.getUser_id() || null == user.getPay_password()) {
-
+    public JsonResult setPW(@RequestBody Map map) {
+        //判断token
+        if (!getToken()) {
+            return new JsonResult(Constant.ERROT_TOKENINVALID, "token无效");
+        }
+        String decryptPayPW = null;
+        String decryptNewPW = null;
+        String user_id = (String) map.get("user_id");
+        String pay_password = (String) map.get("pay_password");
+        String newPassword = (String) map.get("newPassword");
+        if (null == user_id || null == pay_password) {
             return new JsonResult(Constant.ERRORCODE, "参数不完整");
         }
+        try {
+            decryptPayPW = AESUtil.decrypt(pay_password, AESUtil.KEY);
+            decryptNewPW = AESUtil.decrypt(newPassword, AESUtil.KEY);
 
-        boolean b = userMapper.setPlayPW(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        //用户是否已经存在
+//        User user_01 = userMapper.findUserById(user.getUser_id());
+        List<User> user_server = userMapper.findUsersById(Integer.parseInt(user_id));
+        int isSet = user_server.get(0).getIsSet();
+        if (user_server.size() > 0) {
+            if (null != newPassword) {
+
+                if (isSet == 0) {
+                    //没有设置过密码
+                    return new JsonResult(Constant.ERRORCODE, "请先设置支付密码");
+                } else {
+                    System.out.println("user_01" + user_server.get(0).toString());
+                    if (!user_server.get(0).getPay_password().equals(decryptPayPW)) {
+                        return new JsonResult(Constant.ERRORCODE, "原始密码不正确");
+                    }
+                    //设置过密码，进行修改密码
+                    return sendChangeRequest(user_id, decryptNewPW, Constant.MODIFY_PAYPASSWORD);
+                }
+            } else {
+                if (isSet == 1) {
+                    return new JsonResult(Constant.ERRORCODE, "支付密码已经存在");
+                }
+
+                //设置支付密码
+                return sendChangeRequest(user_id, decryptPayPW, Constant.SET_PAYPASSWORD);
+            }
+        } else {
+
+            return new JsonResult(Constant.ERRORCODE, "用户不存在");
+        }
+
+
+    }
+
+    /**
+     * 修改密码和设置密码
+     *
+     * @param user_id
+     * @param newPassword
+     * @param type
+     * @return
+     */
+    private JsonResult sendChangeRequest(String user_id, String newPassword, String type) {
+        ChangePWBean changePWBean = new ChangePWBean();
+        changePWBean.setUser_id(Integer.parseInt(user_id));
+        changePWBean.setPay_password(newPassword);
+        boolean b = false;
+        switch (type) {
+            case Constant.SET_PAYPASSWORD:
+                b = userMapper.setPayPW(changePWBean);
+                break;
+            case Constant.MODIFY_PAYPASSWORD:
+                b = userMapper.modifyPayPW(changePWBean);
+                break;
+        }
         if (b) {
             return new JsonResult();
         } else {
-            return new JsonResult(Constant.ERRORCODE, "设置密码成功");
+            return new JsonResult(Constant.ERRORCODE, "操作失败");
         }
-
     }
 
 
@@ -133,11 +197,22 @@ public class UserController {
         if (!getToken()) {
             return new JsonResult(Constant.ERROT_TOKENINVALID, "token无效");
         }
-        User userById = userMapper.findUserById(user.getUser_id());
+        List<User> usersById = userMapper.findUsersById(user.getUser_id());
+        System.out.println(usersById.get(0).toString());
 
-        if (userById == null) {
+        if (usersById.size() == 0) {
             return new JsonResult(Constant.ERROR_USERNOTEXIST, "用户不存在");
         }
+
+        if (null != user.getPay_password()) {
+            //判断支付密码是否正确
+            if (!user.getPay_password().equals(usersById.get(0).getPay_password())) {
+                return new JsonResult(Constant.ERRORCODE, "支付密码错误");
+
+            }
+        }
+
+
         synchronized (UserController.class) {
             int money = 0;
             int dataCondition = user.getDataCondition();//0.代表1个月  ,1代表 半年 ,2代表一年
@@ -153,7 +228,7 @@ public class UserController {
                     break;
             }
 
-            boolean b = useDataToQKL(userById, money);
+            boolean b = useDataToQKL(usersById.get(0), money);
             if (!b) {
                 return new JsonResult(Constant.ERRORCODE, "dlb余额不足");
             }
@@ -205,22 +280,31 @@ public class UserController {
     /**
      * 充值记录
      *
-     * @param userInfo
+     * @param
      * @return
      */
     @RequestMapping(value = "/rechargeRecord", produces = "application/json;charset=UTF-8")
-    public JsonResult rechargeRecord(@RequestBody UserInfo userInfo) {
+    public PageResult rechargeRecord(@RequestBody PageInfo pageInfo) {
         //判断token
         if (!getToken()) {
-            return new JsonResult(Constant.ERROT_TOKENINVALID, "token无效");
+            return new PageResult(Constant.ERROT_TOKENINVALID, "token无效");
         }
 
-        User user = userMapper.findUserById(userInfo.getUser_id());
+        User user = userMapper.findUserById(pageInfo.getUser_id());
         if (user == null) {
-            return new JsonResult(Constant.ERROR_USERNOTEXIST, "用户不存在");
+            return new PageResult(Constant.ERROR_USERNOTEXIST, "用户不存在");
         }
-        List<RechargeBean> rechargeBeans = userMapper.queryTransferRecord(userInfo.getUser_id());
-        return new JsonResult(rechargeBeans);
+        int currentIndex = 0;
+        int count = userMapper.queryTopUpRecord(pageInfo.getUser_id());
+        if (pageInfo.getCurrentPage() == 0) {
+            pageInfo.setCurrentPage(1);
+        }
+        currentIndex = pageInfo.getPageSize() * (pageInfo.getCurrentPage() - 1);
+
+        pageInfo.setCurrentIndex(currentIndex);
+
+        List<RechargeBean> rechargeBeans = userMapper.queryTransferRecord(pageInfo);
+        return new PageResult(rechargeBeans, count);
     }
 
     /**
@@ -241,45 +325,45 @@ public class UserController {
         List<MovieTypeRecord> movieTypeRecords = new ArrayList();
         List<ProvinceDataRecord> provinceDataRecords = new ArrayList();
         List<Top10MovieRecord> top10MovieRecords = new ArrayList();
-
+//
         List<MovieTypeBean> movieTypes = queryDatas.getMovieTypes();
         List<ProvinceBean> provinces = queryDatas.getProvinces();
         List<MovieBean> movies = queryDatas.getMovies();
-
-        for (int i = 0; i < movieTypes.size(); i++
-        ) {
-            MovieTypeRecord movieTypeRecord = new MovieTypeRecord();
-            movieTypeRecord.setName(movieTypes.get(i).getName());
-            movieTypeRecord.setNum(movieTypes.get(i).getNum());
-            movieTypeRecord.setUser_id(queryDatas.getId());
-            movieTypeRecord.setData_type(type);
-            movieTypeRecords.add(movieTypeRecord);
-        }
-
-
-        for (int i = 0; i < provinces.size(); i++
-        ) {
-            ProvinceDataRecord provinceDataRecord = new ProvinceDataRecord();
-            provinceDataRecord.setNum(provinces.get(i).getCount());
-            provinceDataRecord.setProvince(provinces.get(i).getProvince());
-            provinceDataRecord.setUser_id(queryDatas.getId());
-            provinceDataRecords.add(provinceDataRecord);
-
-        }
-
-        for (int i = 0; i < top10MovieRecords.size(); i++
-        ) {
-            Top10MovieRecord top10MovieRecord = new Top10MovieRecord();
-            top10MovieRecord.setNum(movies.get(i).getNum());
-            top10MovieRecord.setName(movies.get(i).getName());
-            top10MovieRecord.setUser_id(queryDatas.getId());
-            top10MovieRecord.setCid(movies.get(i).getCid());
-            top10MovieRecords.add(top10MovieRecord);
-
-        }
-        userMapper.saveAnalyzeMovieTypeRecode(movieTypeRecords);
-        userMapper.saveAnalyzeProvinceRecode(provinceDataRecords);
-        userMapper.saveAnalyzeMovieRecode(top10MovieRecords);
+//
+//        for (int i = 0; i < movieTypes.size(); i++
+//        ) {
+//            MovieTypeRecord movieTypeRecord = new MovieTypeRecord();
+//            movieTypeRecord.setName(movieTypes.get(i).getName());
+//            movieTypeRecord.setNum(movieTypes.get(i).getNum());
+//            movieTypeRecord.setUser_id(queryDatas.getId());
+//            movieTypeRecord.setData_type(type);
+//            movieTypeRecords.add(movieTypeRecord);
+//        }
+//
+//
+//        for (int i = 0; i < provinces.size(); i++
+//        ) {
+//            ProvinceDataRecord provinceDataRecord = new ProvinceDataRecord();
+//            provinceDataRecord.setNum(provinces.get(i).getCount());
+//            provinceDataRecord.setProvince(provinces.get(i).getProvince());
+//            provinceDataRecord.setUser_id(queryDatas.getId());
+//            provinceDataRecords.add(provinceDataRecord);
+//
+//        }
+//
+//        for (int i = 0; i < top10MovieRecords.size(); i++
+//        ) {
+//            Top10MovieRecord top10MovieRecord = new Top10MovieRecord();
+//            top10MovieRecord.setNum(movies.get(i).getNum());
+//            top10MovieRecord.setName(movies.get(i).getName());
+//            top10MovieRecord.setUser_id(queryDatas.getId());
+//            top10MovieRecord.setCid(movies.get(i).getCid());
+//            top10MovieRecords.add(top10MovieRecord);
+//
+//        }
+//        userMapper.saveAnalyzeMovieTypeRecode(movieTypeRecords);
+//        userMapper.saveAnalyzeProvinceRecode(provinceDataRecords);
+//        userMapper.saveAnalyzeMovieRecode(top10MovieRecords);
     }
 
     /**
@@ -292,13 +376,14 @@ public class UserController {
         params.put(WalletArgument.sender, user.getAddress());
         params.put(WalletArgument.privateKey, user.getPrivateKey());
         params.put(WalletArgument.dataType, "1");
-        params.put(WalletArgument.dataAmount, money + "");
+        params.put(WalletArgument.dataAmount, 1 + "");
+        params.put(WalletArgument.pay, money + "");
         try {
-            HttpsClient.getInstance().sendRequet(URLAdresss.URL_USEDATE, params);
+            return HttpsClient.getInstance().sendRequet(URLAdresss.URL_USEDATE, params).getSuccess();
         } catch (Exception e) {
             return false;
         }
-        return false;
+
     }
 
     /**
